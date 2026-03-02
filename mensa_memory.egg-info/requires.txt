@@ -1,0 +1,6 @@
+lancedb
+torch
+sentence-transformers
+fastmcp
+markitdown>=0.1.5
+onnxruntime-gpu>=1.24.2

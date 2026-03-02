@@ -21,7 +21,7 @@ embed_model = registry.create(
 
 class MemorySchema(LanceModel):
     text: str = embed_model.SourceField()
-    vector: Vector(embed_model.ndims()) = embed_model.VectorField()
+    vector: Vector(embed_model.ndims()) = embed_model.VectorField()  # type: ignore
 
 # Initialize table
 table = db.create_table("memories", schema=MemorySchema, exist_ok=True)
@@ -43,5 +43,8 @@ def query_memory(question: str, top_k: int = 3) -> str:
     context = "\n---\n".join([r.text for r in results])
     return f"Found these relevant memories:\n\n{context}"
 
-if __name__ == "__main__":
+def main():
     mcp.run()
+
+if __name__ == "__main__":
+    main()
