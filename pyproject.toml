@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mensa-memory = "main:main"
+mensa-memory = "main:mcp.run"
 
 [[tool.uv.index]]
 url = "https://download.pytorch.org/whl/cu12"

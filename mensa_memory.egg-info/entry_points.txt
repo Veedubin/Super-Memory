@@ -1,0 +1,2 @@
+[console_scripts]
+mensa-memory = main:mcp.run
