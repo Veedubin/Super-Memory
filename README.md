@@ -82,7 +82,7 @@ Or if installed with `uv tool`:
 
 ## Requirements
 
-- Python >= 3.12
+- Python >= 3.13
 - CUDA (optional but recommended) - falls back to CPU automatically
 - ~500MB disk space for the embedding model (downloaded on first run)
 
