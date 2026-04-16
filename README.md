@@ -32,22 +32,22 @@ Super-Memory gives your AI agents long-term memory across sessions. It stores an
 ### Using `uv` (recommended)
 
 ```bash
-uv tool install super-memory
+uv tool install super-memory-mcp
 ```
 
 ### Using `pip`
 
 ```bash
-pip install super-memory
+pip install super-memory-mcp
 ```
 
 ### Manual / Development
 
 ```bash
-git clone https://github.com/Veedubin/super-memory.git
-cd super-memory
+git clone https://github.com/Veedubin/Super-Memory.git
+cd Super-Memory
 uv sync
-uv run super-memory
+uv run super-memory-mcp
 ```
 
 ## OpenCode Configuration
@@ -57,9 +57,9 @@ Add to your `.opencode/opencode.json`:
 ```json
 {
   "mcp": {
-    "super-memory": {
+    "super-memory-mcp": {
       "type": "local",
-      "command": ["uv", "run", "super-memory"],
+      "command": ["uv", "run", "super-memory-mcp"],
       "enabled": true
     }
   }
@@ -71,9 +71,9 @@ Or if installed with `uv tool`:
 ```json
 {
   "mcp": {
-    "super-memory": {
+    "super-memory-mcp": {
       "type": "local",
-      "command": ["super-memory"],
+      "command": ["super-memory-mcp"],
       "enabled": true
     }
   }

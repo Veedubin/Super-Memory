@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "super-memory"
+name = "super-memory-mcp"
 version = "0.2.1"
 description = "A semantic memory storage and retrieval system using LanceDB and sentence transformers"
 readme = "README.md"
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-super-memory = "super_memory:main"
+super-memory-mcp = "super_memory:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/super_memory"]
