@@ -1,4 +1,4 @@
-# Agent Instructions for Mensa-Memory
+# Agent Instructions for Super-Memory
 
 ## Build/Development Commands
 
@@ -10,7 +10,7 @@ This project uses [uv](https://docs.astral.sh/uv/) for Python package management
 uv sync
 
 # Run the main application
-uv run main.py
+uv run -m super_memory
 ```
 
 ### Testing
@@ -138,12 +138,11 @@ def calculate_total(items: list[Item]) -> float:
 ### Project Structure
 ```
 .
-├── main.py              # Entry point
 ├── pyproject.toml       # Project configuration
 ├── .python-version      # Python version
 ├── README.md
-├── src/                 # Source code (when expanded)
-│   └── mensa_memory/
+├── src/                 # Source code
+│   └── super_memory/
 ├── tests/               # Test files
 └── AGENTS.md           # This file
 ```

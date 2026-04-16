@@ -1,20 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
-name = "mensa-memory"
-version = "0.1.0"
-description = "Add your description here"
+name = "super-memory"
+version = "0.2.1"
+description = "A semantic memory storage and retrieval system using LanceDB and sentence transformers"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "lancedb",
     "torch",
+    "torchvision",
+    "torchaudio",
     "sentence-transformers",
     "fastmcp",
     "markitdown>=0.1.5",
     "onnxruntime-gpu>=1.24.2",
+    "pydantic<2.12",
 ]
 
 [project.scripts]
-mensa-memory = "main:mcp.run"
+super-memory = "super_memory:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/super_memory"]
 
 [[tool.uv.index]]
 url = "https://download.pytorch.org/whl/cu12"

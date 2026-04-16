@@ -1,9 +1,0 @@
-README.md
-main.py
-pyproject.toml
-mensa_memory.egg-info/PKG-INFO
-mensa_memory.egg-info/SOURCES.txt
-mensa_memory.egg-info/dependency_links.txt
-mensa_memory.egg-info/entry_points.txt
-mensa_memory.egg-info/requires.txt
-mensa_memory.egg-info/top_level.txt
