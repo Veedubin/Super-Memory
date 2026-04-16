@@ -5,7 +5,7 @@ from fastmcp import FastMCP
 from .mcp_tools import register_tools
 
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 mcp = FastMCP("SuperMemory")
 
