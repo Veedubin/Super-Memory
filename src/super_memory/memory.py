@@ -23,8 +23,12 @@ def _migrate_schema_if_needed() -> None:
     2. If table exists with old schema: add new columns with defaults
     3. If table exists with new schema: use as-is
     """
-    if "memories" not in db.list_tables():
-        db.create_table("memories", schema=MemorySchema)
+    if "memories" not in list(db.list_tables()):
+        try:
+            db.create_table("memories", schema=MemorySchema)
+        except ValueError as e:
+            if "already exists" not in str(e).lower():
+                raise
         return
 
     existing_table = db.open_table("memories")
