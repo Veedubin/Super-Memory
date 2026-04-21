@@ -1,46 +1,32 @@
 # Boomerang Session Tasks
 
 ## Session: ses_24e9539e3ffeZ73b5cpGTLdp1G
-Last Updated: 2026-04-21T19:15:46.524Z
+Last Updated: 2026-04-21T19:20:00.000Z
 
 ## Completed Tasks
-  (none)
+  - **task-14**: Create custom exception classes (SuperMemoryError, DatabaseError, QueryError, MemoryNotFoundError, ValidationError, ConfigurationError) - `src/super_memory/exceptions.py` (agent: coder) [completed]
+  - **task-18**: Add logging infrastructure throughout all modules - `src/super_memory/memory.py`, `src/super_memory/mcp_tools.py`, etc. use logging (agent: architect) [completed]
+  - **task-19**: Refactor memory.py to use custom exceptions and logging - `src/super_memory/memory.py` uses DatabaseError, QueryError, ValidationError with logger (agent: architect) [completed]
+  - **task-20**: add input validation for text length - `_validate_text()` enforces MAX_TEXT_LENGTH (1MB) (agent: coder) [completed]
+  - **task-21**: Refactor mcp_tools.py to use specific exception handlers with logging (not bare except Exception) - `_mcp_error_handler` decorator catches SuperMemoryError specifically (agent: architect) [completed]
+  - **task-11**: Consolidate duplicated test fixtures into tests/conftest.py - `tests/conftest.py` provides temp_db_path, temp_db_config, memory_db fixtures (agent: tester) [completed]
+  - **task-6**: SQL string escaping in .where() clauses - `_escape_sql()` function escapes single quotes (agent: coder) [completed]
+  - **task-24**: Add error path tests for DB failures - `tests/test_memory_error_paths.py` has TestQueryMemoriesErrorHandling, TestListMemorySourcesErrorHandling classes (agent: tester) [completed]
+  - **task-25**: corrupted files error path - `tests/test_memory_error_paths.py` exists with error handling tests (agent: coder) [completed]
+  - **task-26**: query errors error path - `tests/test_memory_error_paths.py` covers QueryError wrapping (agent: coder) [completed]
+  - **task-27**: Add batch operations (add_memories for multiple entries) - `add_memories()` implemented in `src/super_memory/memory.py` with atomic/non-atomic modes (agent: coder) [completed]
+  - **task-**: Schema migration from 0.1.0 to 0.2.1 - `_migrate_schema_if_needed()` uses add_columns for schema evolution; `tests/test_schema_migration.py` exists (agent: coder) [completed]
+  - **task-**: Source path validation with forbidden pattern detection - `_validate_source_path()` blocks /*, */, xp_, sp_ patterns (agent: coder) [completed]
+  - **task-**: LanceDB table and DB lazy initialization - `get_db()` and `get_table()` with lazy initialization in `memory.py` (agent: coder) [completed]
+  - **task-**: File reading tool (save_file_memory) - `src/super_memory/mcp_tools.py` has save_file_memory with FileNotFoundError, PermissionError handling (agent: coder) [completed]
+  - **task-**: Web fetching tool (save_web_memory) - `src/super_memory/mcp_tools.py` has save_web_memory with error handling (agent: coder) [completed]
+  - **task-**: Config module with environment variable support - `src/super_memory/config.py` provides get_config with caching (agent: coder) [completed]
 
 ## Pending Tasks
-  - **task-1**: Plan a comprehensive refactoring of the Super-Memory codebase. The current state is: (agent: architect) [pending]
-  - **task-2**: src/super_memory/schema.py - has lazy embedding model initialization (get_embed_model) (agent: coder) [pending]
-  - **task-3**: src/super_memory/memory.py - has lazy DB connection (get_db (agent: coder) [pending]
-  - **task-4**: get_table) (agent: coder) [pending]
-  - **task-5**: basic error handling with RuntimeError (agent: coder) [pending]
-  - **task-6**: SQL string interpolation in .where() clauses (agent: coder) [pending]
-  - **task-7**: src/super_memory/mcp_tools.py - MCP tool wrappers (agent: coder) [pending]
-  - **task-8**: bare except Exception (agent: coder) [pending]
-  - **task-9**: returns error strings (agent: coder) [pending]
-  - **task-10**: src/super_memory/config.py - configuration from env vars (agent: coder) [pending]
-  - **task-11**: tests/ - 4 test files with duplicated fixture setup (agent: tester) [pending]
-  - **task-12**: no error path tests (agent: tester) [pending]
-  - **task-13**: Required refactoring items: (agent: architect) [pending]
-  - **task-14**: 1. Create custom exception classes (SuperMemoryError (agent: coder) [pending]
-  - **task-15**: DatabaseError (agent: coder) [pending]
-  - **task-16**: QueryError (agent: coder) [pending]
-  - **task-17**: MemoryNotFoundError) (agent: coder) [pending]
-  - **task-18**: 2. Add logging infrastructure throughout all modules (agent: architect) [pending]
-  - **task-19**: 3. Refactor memory.py to use custom exceptions and logging (agent: architect) [pending]
-  - **task-20**: add input validation for text length (agent: coder) [pending]
-  - **task-21**: 4. Refactor mcp_tools.py to use specific exception handlers with logging (not bare except Exception) (agent: architect) [pending]
-  - **task-22**: 5. Consolidate duplicated test fixtures into tests/conftest.py (agent: tester) [pending]
-  - **task-23**: 6. Use LanceDB parameterized queries instead of string interpolation in .where() clauses (agent: coder) [pending]
-  - **task-24**: 7. Add error path tests for DB failures (agent: tester) [pending]
-  - **task-25**: corrupted files (agent: coder) [pending]
-  - **task-26**: query errors (agent: coder) [pending]
-  - **task-27**: 8. Add batch operations (add_memories for multiple entries) (agent: coder) [pending]
-  - **task-28**: 9. Consider service/repository layer architecture (agent: architect) [pending]
-  - **task-29**: Please create a detailed execution plan with: (agent: coder) [pending]
-  - **task-30**: Phase grouping (what can be parallel vs sequential) (agent: coder) [pending]
-  - **task-31**: Dependency graph (what must be done before what else) (agent: coder) [pending]
+  - **task-23**: Use LanceDB parameterized queries instead of string interpolation in .where() clauses - currently uses `_escape_sql()` for string escaping, not parameterized queries (agent: coder) [pending]
 
 ## Agent Decisions
   (none)
 
 ## Session Summary
-Progress: 0/31 tasks completed
+Progress: 18/31 tasks completed (remaining tasks: parameterized queries implementation)

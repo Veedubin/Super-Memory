@@ -88,7 +88,7 @@ Or if installed with `uv tool`:
 
 ## First Run
 
-On first startup, Super-Memory will download the `BAAI/bge-large-en-v1.5` sentence transformer model. This may take a few minutes depending on your internet connection.
+On first startup, Super-Memory will download the `sentence-transformers/all-MiniLM-L6-v2` sentence transformer model. This may take a few minutes depending on your internet connection.
 
 ## Data Storage
 

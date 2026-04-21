@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -32,7 +31,8 @@ class TestMcpTools:
         register_tools(mcp)
         return mcp
 
-    def test_tools_are_registered(self, setup_mcp) -> None:
+    @pytest.mark.asyncio
+    async def test_tools_are_registered(self, setup_mcp) -> None:
         """Test that all 8 expected tools are registered."""
         expected_tools = {
             "save_to_memory",
@@ -45,16 +45,12 @@ class TestMcpTools:
             "query_memory",
         }
 
-        # Run the async get_tool to get tool names
-        async def get_tool_names():
-            names = set()
-            for name in expected_tools:
-                tool = await setup_mcp.get_tool(name)
-                if tool is not None:
-                    names.add(name)
-            return names
-
-        tool_names = asyncio.get_event_loop().run_until_complete(get_tool_names())
+        # Get tool names
+        tool_names = set()
+        for name in expected_tools:
+            tool = await setup_mcp.get_tool(name)
+            if tool is not None:
+                tool_names.add(name)
 
         # All tools should be registered
         assert expected_tools.issubset(tool_names), (
