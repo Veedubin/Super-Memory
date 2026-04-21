@@ -426,7 +426,7 @@ def add_memories(
     return results
 
 
-def query_memories(question: str, top_k: int = 3) -> list:
+def query_memories(question: str, top_k: int = 5) -> list:
     """Search for relevant memories using semantic similarity.
 
     Args:
@@ -437,8 +437,13 @@ def query_memories(question: str, top_k: int = 3) -> list:
         List of matching MemorySchema entries.
 
     Raises:
+        ValidationError: If top_k is not a positive integer or exceeds 20.
         QueryError: If database query fails.
     """
+    if top_k < 1:
+        raise ValidationError("top_k must be a positive integer")
+    if top_k > 20:
+        raise ValidationError("top_k cannot exceed 20")
     logger.info("Querying memories: question=%s, top_k=%d", question, top_k)
 
     ensure_initialized()

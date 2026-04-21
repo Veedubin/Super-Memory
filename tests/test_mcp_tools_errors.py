@@ -115,7 +115,7 @@ class TestMcpToolErrorHandling:
             )
 
             result = await setup_mcp.call_tool(
-                "query_memory", {"question": "test query", "top_k": 3}
+                "query_memory", {"question": "test query", "top_k": 5}
             )
             text = get_tool_result_text(result)
 
@@ -132,7 +132,7 @@ class TestMcpToolErrorHandling:
             mock_query_memories.side_effect = QueryError("Database connection lost")
 
             result = await setup_mcp.call_tool(
-                "query_memory", {"question": "test query", "top_k": 3}
+                "query_memory", {"question": "test query", "top_k": 5}
             )
             text = get_tool_result_text(result)
 

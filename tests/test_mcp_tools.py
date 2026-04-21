@@ -80,7 +80,7 @@ class TestMcpTools:
         add_memory(text="Python is a programming language", source_type="session")
 
         result = await setup_mcp.call_tool(
-            "query_memory", {"question": "programming", "top_k": 3}
+            "query_memory", {"question": "programming", "top_k": 5}
         )
         text = get_tool_result_text(result)
 

@@ -65,6 +65,37 @@ class TestAddMemoryValidationErrors:
             assert "forbidden pattern" in str(exc_info.value)
 
 
+class TestQueryMemoriesValidation:
+    """Tests for top_k validation in query_memories."""
+
+    def test_query_memories_raises_validation_error_for_top_k_zero(
+        self,
+        memory_db,
+    ) -> None:
+        """Test that query_memories raises ValidationError for top_k=0."""
+        with pytest.raises(ValidationError) as exc_info:
+            query_memories("test query", top_k=0)
+        assert "top_k must be a positive integer" in str(exc_info.value)
+
+    def test_query_memories_raises_validation_error_for_top_k_exceeds_20(
+        self,
+        memory_db,
+    ) -> None:
+        """Test that query_memories raises ValidationError for top_k=21."""
+        with pytest.raises(ValidationError) as exc_info:
+            query_memories("test query", top_k=21)
+        assert "top_k cannot exceed 20" in str(exc_info.value)
+
+    def test_query_memories_succeeds_for_top_k_5(
+        self,
+        memory_db,
+    ) -> None:
+        """Test that query_memories works fine for top_k=5."""
+        # Should not raise any exception
+        result = query_memories("test query", top_k=5)
+        assert isinstance(result, list)
+
+
 class TestQueryMemoriesErrorHandling:
     """Tests for QueryError handling in query_memories."""
 

@@ -165,7 +165,7 @@ def register_tools(mcp: FastMCP) -> None:
 
     @mcp.tool()
     @_mcp_error_handler
-    def query_memory(question: str, top_k: int = 3) -> str:
+    def query_memory(question: str, top_k: int = 5) -> str:
         """Retrieves relevant past memories based on a semantic search."""
         logger.info("Querying memory: %s", question)
         results = query_memories(question, top_k)
