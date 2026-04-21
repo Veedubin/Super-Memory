@@ -78,6 +78,7 @@ def get_db():
     global _db
     if _db is None:
         try:
+            os.makedirs(config.db_path, exist_ok=True)
             _db = lancedb.connect(config.db_path)
         except Exception as e:
             logger.error("Failed to connect to database: %s", e)
