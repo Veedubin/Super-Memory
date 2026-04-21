@@ -3,13 +3,16 @@
 from fastmcp import FastMCP
 
 from .mcp_tools import register_tools
+from .config import configure_logging
 
 
-__version__ = "0.2.2"
+__version__ = "0.4.0"
 
 mcp = FastMCP("SuperMemory")
 
 register_tools(mcp)
+
+configure_logging()
 
 
 def main() -> None:

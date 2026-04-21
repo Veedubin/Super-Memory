@@ -23,38 +23,7 @@ class TestMcpTools:
     """Tests for MCP tools - verifying tool registration and basic behavior."""
 
     @pytest.fixture
-    def mock_memory_db(self, tmp_path, monkeypatch):
-        """Set up a temporary memory database."""
-        import super_memory.config as config_module
-        import super_memory.memory as memory_module
-
-        # Store original get_config
-        original_get_config = config_module.get_config
-
-        config_module.get_config.cache_clear()
-
-        db_path = str(tmp_path / "test_mcp_tools.db")
-        test_config = config_module.Config(
-            db_path=db_path,
-            device="cpu",
-            model="sentence-transformers/all-MiniLM-L6-v2",
-        )
-
-        monkeypatch.setattr(config_module, "get_config", lambda: test_config)
-        monkeypatch.setattr(memory_module, "config", test_config)
-
-        import importlib
-
-        importlib.reload(memory_module)
-
-        yield db_path
-
-        # Clean up - restore original and clear cache
-        monkeypatch.setattr(config_module, "get_config", original_get_config)
-        config_module.get_config.cache_clear()
-
-    @pytest.fixture
-    def setup_mcp(self, mock_memory_db):
+    def setup_mcp(self, memory_db):
         """Set up FastMCP with tools registered."""
         from fastmcp import FastMCP
         from super_memory.mcp_tools import register_tools

@@ -30,7 +30,8 @@ class TestGetConfig:
 
         assert isinstance(config, Config)
         assert config.db_path == "./memory_data"
-        assert config.model == "BAAI/bge-large-en-v1.5"
+        assert config.model == "sentence-transformers/all-MiniLM-L6-v2"
+        assert config.dtype == "float32"
         # Device depends on torch.cuda.is_available(), so just check it's valid
         assert config.device in ("cpu", "cuda")
 
@@ -40,6 +41,7 @@ class TestGetConfig:
             "SUPER_MEMORY_DB_PATH": "/custom/db/path",
             "SUPER_MEMORY_MODEL": "custom/model",
             "SUPER_MEMORY_DEVICE": "cpu",
+            "SUPER_MEMORY_DTYPE": "float16",
         }
         with patch.dict(os.environ, env_vars, clear=True):
             get_config.cache_clear()
@@ -48,6 +50,7 @@ class TestGetConfig:
         assert config.db_path == "/custom/db/path"
         assert config.model == "custom/model"
         assert config.device == "cpu"
+        assert config.dtype == "float16"
 
     def test_invalid_device_raises_value_error(self) -> None:
         """Test that invalid SUPER_MEMORY_DEVICE raises ValueError."""

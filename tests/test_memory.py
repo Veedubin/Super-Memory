@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
 
 # Import functions directly to test
 from super_memory.memory import (
@@ -64,48 +63,7 @@ class TestParseMetadata:
 class TestMemoryOperations:
     """Tests for memory CRUD operations using temporary database."""
 
-    @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database path."""
-        db_path = str(tmp_path / "test_memory.db")
-        return db_path
-
-    @pytest.fixture
-    def setup_memory_db(self, temp_db_path, monkeypatch):
-        """Set up a temporary memory database with mocked config."""
-        # Clear any cached config and module state
-        import super_memory.config as config_module
-        import super_memory.memory as memory_module
-
-        # Store original get_config
-        original_get_config = config_module.get_config
-
-        config_module.get_config.cache_clear()
-
-        # Mock get_config to return test config
-        test_config = config_module.Config(
-            db_path=temp_db_path,
-            device="cpu",
-            model="sentence-transformers/all-MiniLM-L6-v2",
-        )
-
-        monkeypatch.setattr(config_module, "get_config", lambda: test_config)
-
-        # Reset module state to use new config
-        monkeypatch.setattr(memory_module, "config", test_config)
-
-        # Re-import to get fresh state
-        import importlib
-
-        importlib.reload(memory_module)
-
-        yield temp_db_path
-
-        # Clean up - restore original and clear cache
-        monkeypatch.setattr(config_module, "get_config", original_get_config)
-        config_module.get_config.cache_clear()
-
-    def test_add_and_query_memories_roundtrip(self, setup_memory_db) -> None:
+    def test_add_and_query_memories_roundtrip(self, memory_db) -> None:
         """Test add_memory and query_memories work together."""
         from super_memory.memory import add_memory, query_memories
 
@@ -120,7 +78,7 @@ class TestMemoryOperations:
         assert len(results) >= 1
         assert "Python" in results[0].text
 
-    def test_list_memory_sources_without_filter(self, setup_memory_db) -> None:
+    def test_list_memory_sources_without_filter(self, memory_db) -> None:
         """Test list_memory_sources returns all sources."""
         from super_memory.memory import add_memory, list_memory_sources
 
@@ -130,7 +88,7 @@ class TestMemoryOperations:
         results = list_memory_sources()
         assert len(results) >= 2
 
-    def test_list_memory_sources_with_filter(self, setup_memory_db) -> None:
+    def test_list_memory_sources_with_filter(self, memory_db) -> None:
         """Test list_memory_sources with source_type filter."""
         from super_memory.memory import add_memory, list_memory_sources
 
@@ -140,7 +98,7 @@ class TestMemoryOperations:
         session_sources = list_memory_sources(source_type="session")
         assert all(r.source_type == "session" for r in session_sources)
 
-    def test_recall_memory_by_path(self, setup_memory_db) -> None:
+    def test_recall_memory_by_path(self, memory_db) -> None:
         """Test recall_memory_by_path returns correct memory."""
         from super_memory.memory import add_memory, recall_memory_by_path
 
@@ -156,14 +114,14 @@ class TestMemoryOperations:
         assert result.text == "File content here"
         assert result.source_path == path
 
-    def test_recall_memory_by_path_not_found(self, setup_memory_db) -> None:
+    def test_recall_memory_by_path_not_found(self, memory_db) -> None:
         """Test recall_memory_by_path returns None for non-existent path."""
         from super_memory.memory import recall_memory_by_path
 
         result = recall_memory_by_path("/nonexistent/path.txt")
         assert result is None
 
-    def test_save_and_get_boomerang_context_roundtrip(self, setup_memory_db) -> None:
+    def test_save_and_get_boomerang_context_roundtrip(self, memory_db) -> None:
         """Test save_boomerang_context and get_boomerang_context work together."""
         from super_memory.memory import get_boomerang_context, save_boomerang_context
 
@@ -177,7 +135,7 @@ class TestMemoryOperations:
         assert "task1" in result.text
         assert "task2" in result.text
 
-    def test_get_boomerang_context_not_found(self, setup_memory_db) -> None:
+    def test_get_boomerang_context_not_found(self, memory_db) -> None:
         """Test get_boomerang_context returns None for non-existent session."""
         from super_memory.memory import get_boomerang_context
 
@@ -188,43 +146,7 @@ class TestMemoryOperations:
 class TestSQLInjectionResistance:
     """Tests for SQL injection resistance in path queries."""
 
-    @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database path."""
-        db_path = str(tmp_path / "test_injection.db")
-        return db_path
-
-    @pytest.fixture
-    def setup_memory_db(self, temp_db_path, monkeypatch):
-        """Set up a temporary memory database with mocked config."""
-        import super_memory.config as config_module
-        import super_memory.memory as memory_module
-
-        # Store original get_config
-        original_get_config = config_module.get_config
-
-        config_module.get_config.cache_clear()
-
-        test_config = config_module.Config(
-            db_path=temp_db_path,
-            device="cpu",
-            model="sentence-transformers/all-MiniLM-L6-v2",
-        )
-
-        monkeypatch.setattr(config_module, "get_config", lambda: test_config)
-        monkeypatch.setattr(memory_module, "config", test_config)
-
-        import importlib
-
-        importlib.reload(memory_module)
-
-        yield temp_db_path
-
-        # Clean up
-        monkeypatch.setattr(config_module, "get_config", original_get_config)
-        config_module.get_config.cache_clear()
-
-    def test_source_path_with_single_quotes(self, setup_memory_db) -> None:
+    def test_source_path_with_single_quotes(self, memory_db) -> None:
         """Test that single quotes in source_path are properly escaped."""
         from super_memory.memory import add_memory, recall_memory_by_path
 
