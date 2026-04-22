@@ -14,6 +14,7 @@ def main():
     if len(sys.argv) > 0 and "migrate" in sys.argv[0]:
         # Invoked as python -m super_memory.migrate
         from super_memory.migrate import main as migrate_main
+
         migrate_main()
     else:
         server_main()

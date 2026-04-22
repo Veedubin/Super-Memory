@@ -41,6 +41,7 @@ def detect_device():
     """Detect GPU availability, fallback to CPU."""
     try:
         import torch
+
         if torch.cuda.is_available():
             return "cuda"
     except ImportError:
@@ -51,7 +52,7 @@ def detect_device():
 def _get_tables_list(db):
     """Get list of tables from a database, handling response object types."""
     tables_response = db.list_tables()
-    if hasattr(tables_response, 'tables'):
+    if hasattr(tables_response, "tables"):
         return tables_response.tables
     return list(tables_response)
 
@@ -141,12 +142,16 @@ def read_old_data(db_path: str) -> tuple:
 
         # The table reports entries but we can't read them
         if reported_count > 0:
-            print(f"\n  WARNING: Table reports {reported_count} rows but cannot read all data.")
+            print(
+                f"\n  WARNING: Table reports {reported_count} rows but cannot read all data."
+            )
             print("  This indicates corrupted or missing data fragments.")
             print("\n  Database corruption detected:")
             print(f"    - Reported rows: {reported_count}")
             print(f"    - Readable rows: 0")
-            print(f"    - Missing fragment: {missing_path.split('/')[-1] if missing_path else 'unknown'}")
+            print(
+                f"    - Missing fragment: {missing_path.split('/')[-1] if missing_path else 'unknown'}"
+            )
 
             # Try head() as a fallback
             print("\n  Attempting head() as fallback...")
@@ -155,19 +160,23 @@ def read_old_data(db_path: str) -> tuple:
                 if len(head_df) > 0:
                     df = head_df
                     print(f"  Recovered {len(df)} rows via head() method")
-                    print(f"  WARNING: This is only a partial recovery. {reported_count - len(df)} entries are still missing.")
+                    print(
+                        f"  WARNING: This is only a partial recovery. {reported_count - len(df)} entries are still missing."
+                    )
                     return df, errors
             except Exception as head_error:
                 print(f"  Head also failed: {head_error}")
 
             print("\n  ERROR: Cannot recover data from corrupted database.")
-            print("  This database has corrupted fragments and requires pylance for recovery.")
+            print(
+                "  This database has corrupted fragments and requires pylance for recovery."
+            )
             print("  Install with: pip install pylance")
             print("\n  Alternative solutions:")
             print("    1. Restore from a backup")
             print("    2. Recreate the database from source")
             print("    3. Use 'lance checkpoint' to repair (requires pylance)")
-            return None, [missing_path] if missing_path else ['corrupted']
+            return None, [missing_path] if missing_path else ["corrupted"]
 
     if df is not None and len(df) > 0:
         if reported_count and len(df) != reported_count:
@@ -248,7 +257,7 @@ def migrate_data(records: list[dict], table, embed_fn, device: str):
 
     success_count = 0
     for i in range(0, total, BATCH_SIZE):
-        batch = records[i:i + BATCH_SIZE]
+        batch = records[i : i + BATCH_SIZE]
         batch_num = (i // BATCH_SIZE) + 1
         total_batches = (total + BATCH_SIZE - 1) // BATCH_SIZE
 
@@ -259,13 +268,22 @@ def migrate_data(records: list[dict], table, embed_fn, device: str):
             print(f"  Batch {batch_num} error: {e}")
 
         progress = min(i + BATCH_SIZE, total)
-        print(f"  Progress: {progress}/{total} ({100*progress/total:.1f}%) - batch {batch_num}/{total_batches}")
+        print(
+            f"  Progress: {progress}/{total} ({100 * progress / total:.1f}%) - batch {batch_num}/{total_batches}"
+        )
 
     print(f"\n  Migration complete! ({success_count}/{total} entries)")
     return success_count
 
 
-def print_summary(old_count: int, new_count: int, old_path: str, new_path: str, device: str, errors: list):
+def print_summary(
+    old_count: int,
+    new_count: int,
+    old_path: str,
+    new_path: str,
+    device: str,
+    errors: list,
+):
     """Print migration summary."""
     print("\n" + "=" * 60)
     print("MIGRATION SUMMARY")
@@ -289,7 +307,7 @@ def main():
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Count entries without writing to new database"
+        help="Count entries without writing to new database",
     )
     args = parser.parse_args()
 

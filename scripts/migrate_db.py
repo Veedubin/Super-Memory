@@ -37,7 +37,9 @@ except ImportError:
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError:
-    print("ERROR: sentence-transformers is required. Install with: pip install sentence-transformers")
+    print(
+        "ERROR: sentence-transformers is required. Install with: pip install sentence-transformers"
+    )
     sys.exit(1)
 
 try:
@@ -62,6 +64,7 @@ BGE_DIMS = 1024
 @dataclass
 class MigrationStats:
     """Statistics collected during migration."""
+
     total: int = 0
     minilm_success: int = 0
     minilm_failed: int = 0
@@ -129,7 +132,7 @@ def detect_old_db_model(old_db_path: str) -> str:
         tables_resp = db.list_tables()
 
         # list_tables() returns ListTablesResponse object with .tables attribute
-        tables = tables_resp.tables if hasattr(tables_resp, 'tables') else tables_resp
+        tables = tables_resp.tables if hasattr(tables_resp, "tables") else tables_resp
 
         if "memories" not in tables:
             return "unknown"
@@ -192,7 +195,7 @@ def load_old_memories(old_db_path: str) -> list[dict[str, Any]]:
     try:
         tables_resp = db.list_tables()
         # list_tables() returns ListTablesResponse object with .tables attribute
-        tables = tables_resp.tables if hasattr(tables_resp, 'tables') else tables_resp
+        tables = tables_resp.tables if hasattr(tables_resp, "tables") else tables_resp
     except Exception as e:
         raise Exception(f"Cannot list tables (database may be corrupted): {e}")
 
@@ -202,7 +205,9 @@ def load_old_memories(old_db_path: str) -> list[dict[str, Any]]:
     try:
         table = db.open_table("memories")
     except Exception as e:
-        raise Exception(f"Cannot open 'memories' table (database may be corrupted): {e}")
+        raise Exception(
+            f"Cannot open 'memories' table (database may be corrupted): {e}"
+        )
 
     try:
         # Use to_pandas() to get all entries, handling corrupted fragments gracefully
@@ -220,12 +225,16 @@ def load_old_memories(old_db_path: str) -> list[dict[str, Any]]:
             all_memories = []
             batch_size = 1000
             for offset in range(0, total_rows, batch_size):
-                batch_indices = list(range(offset, min(offset + batch_size, total_rows)))
+                batch_indices = list(
+                    range(offset, min(offset + batch_size, total_rows))
+                )
                 try:
                     batch_data = table.take_offsets(batch_indices).to_list()
                     all_memories.extend(batch_data)
                 except Exception as batch_e:
-                    logger.warning(f"Failed to read batch at offset {offset}: {batch_e}")
+                    logger.warning(
+                        f"Failed to read batch at offset {offset}: {batch_e}"
+                    )
             logger.info(f"Loaded {len(all_memories)} memories using take_offsets()")
             return all_memories
         except Exception as e2:
@@ -340,7 +349,9 @@ def migrate_memories(
                 try:
                     if not bge_etaShown and len(memories) > 10:
                         estimated_time = len(memories) * 1.5  # ~1.5 sec per item
-                        logger.info(f"BGE re-embedding: ~{estimated_time:.0f} seconds estimated")
+                        logger.info(
+                            f"BGE re-embedding: ~{estimated_time:.0f} seconds estimated"
+                        )
                         bge_etaShown = True
 
                     bge_vector = bge_model.encode([text])[0].tolist()
@@ -371,7 +382,9 @@ def migrate_memories(
         pbar.close()
 
 
-def verify_migration(old_db_path: str, new_db_path: str, skip_bge: bool) -> dict[str, int]:
+def verify_migration(
+    old_db_path: str, new_db_path: str, skip_bge: bool
+) -> dict[str, int]:
     """Verify migration by comparing row counts.
 
     Args:
@@ -414,7 +427,9 @@ def verify_migration(old_db_path: str, new_db_path: str, skip_bge: bool) -> dict
     return result
 
 
-def print_summary(stats: MigrationStats, verify_result: dict[str, int], dry_run: bool, skip_bge: bool) -> None:
+def print_summary(
+    stats: MigrationStats, verify_result: dict[str, int], dry_run: bool, skip_bge: bool
+) -> None:
     """Print migration summary report.
 
     Args:
@@ -595,7 +610,9 @@ Examples:
     except Exception as e:
         print(f"ERROR: Migration failed: {e}")
         if not args.dry_run:
-            print(f"\nRecovery suggestion: If migration failed partially, check {new_db_path}")
+            print(
+                f"\nRecovery suggestion: If migration failed partially, check {new_db_path}"
+            )
             print("The old database is still intact in the backup.")
         sys.exit(1)
 
@@ -614,7 +631,9 @@ Examples:
 
     if not args.dry_run:
         print(f"\nNew database location: {new_db_path}")
-        print("\nTo use the new database, set SUPER_MEMORY_DB_PATH environment variable:")
+        print(
+            "\nTo use the new database, set SUPER_MEMORY_DB_PATH environment variable:"
+        )
         print(f"  export SUPER_MEMORY_DB_PATH={new_db_path}")
 
 
