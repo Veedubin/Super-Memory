@@ -116,7 +116,7 @@ class TestQueryMemoriesErrorHandling:
 
             with pytest.raises(QueryError) as exc_info:
                 query_memories("test query")
-            assert "Failed to query memories" in str(exc_info.value)
+            assert "Failed to query MiniLM memories" in str(exc_info.value)
 
     def test_query_memories_wraps_exception_as_query_error(
         self,

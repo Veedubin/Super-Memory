@@ -9,6 +9,7 @@ from fastmcp import FastMCP
 from .exceptions import SuperMemoryError
 from .memory import (
     add_memory,
+    add_memory_long,
     get_boomerang_context as _get_boomerang_context,
     list_memory_sources,
     query_memories,
@@ -46,15 +47,56 @@ def register_tools(mcp: FastMCP) -> None:
 
     @mcp.tool()
     @_mcp_error_handler
-    def save_to_memory(content: str, metadata: Optional[dict] = None) -> str:
-        """Stores a piece of information into your local long-term memory."""
+    def save_to_memory(
+        content: str, metadata: Optional[dict] = None, project: Optional[str] = None
+    ) -> str:
+        """Stores a piece of information into your local long-term memory.
+
+        Args:
+            content: The text content to store.
+            metadata: Optional metadata dictionary.
+            project: Optional project tag to organize memories.
+        """
         logger.info("Saving to memory: %s chars", len(content))
+        if project:
+            metadata = metadata or {}
+            metadata["project"] = project
         add_memory(
             text=content,
             source_type="session",
             metadata=metadata,
         )
         return "Memory archived on GPU."
+
+    @mcp.tool()
+    @_mcp_error_handler
+    def save_memory_long(
+        content: str,
+        project: str,
+        metadata: Optional[dict] = None,
+        force_high_precision: bool = True,
+    ) -> str:
+        """Stores high-precision memory using BGE-Large embeddings.
+
+        Use this for important content that needs more accurate semantic matching.
+
+        Args:
+            content: The text content to store.
+            project: Project tag to organize memories.
+            metadata: Optional metadata dictionary.
+            force_high_precision: If True, always store in high-precision table (default True).
+        """
+        logger.info(
+            "Saving to memory long: %s chars, project=%s", len(content), project
+        )
+        add_memory_long(
+            text=content,
+            source_type="session",
+            project=project,
+            metadata=metadata,
+            force_high_precision=force_high_precision,
+        )
+        return "Memory archived with high precision."
 
     @mcp.tool()
     def save_file_memory(file_path: str) -> str:
@@ -165,10 +207,34 @@ def register_tools(mcp: FastMCP) -> None:
 
     @mcp.tool()
     @_mcp_error_handler
-    def query_memory(question: str, top_k: int = 5) -> str:
-        """Retrieves relevant past memories based on a semantic search."""
+    def query_memory(
+        question: str, top_k: int = 5, strategy: Optional[str] = None
+    ) -> str:
+        """Retrieves relevant past memories based on a semantic search.
+
+        Args:
+            question: Query text to search for.
+            top_k: Maximum number of results to return (default 5, max 20).
+            strategy: Optional search strategy override. Options:
+                - "tiered": Search MiniLM first, fallback to BGE if low confidence (default)
+                - "parallel": Search both tables and merge using rank fusion
+                - "minilm_only": Search only MiniLM table (fastest)
+        """
         logger.info("Querying memory: %s", question)
-        results = query_memories(question, top_k)
+
+        # Normalize strategy
+        if strategy is not None:
+            strategy = strategy.upper().replace("-", "_")
+            if strategy == "MINILM_ONLY":
+                strategy = "MINILM_ONLY"
+            elif strategy == "PARALLEL":
+                strategy = "PARALLEL"
+            elif strategy in ("TIERED", "TIERED"):
+                strategy = "TIERED"
+            else:
+                strategy = "TIERED"
+
+        results = query_memories(question, top_k, strategy)
 
         if not results:
             return "No relevant memories found."

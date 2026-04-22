@@ -29,11 +29,17 @@ class TestGetConfig:
             config = get_config()
 
         assert isinstance(config, Config)
-        assert config.db_path == "./memory_data"
+        # db_path is converted to absolute path
+        assert config.db_path.endswith("/memory_data")
         assert config.model == "sentence-transformers/all-MiniLM-L6-v2"
         assert config.dtype == "float32"
         # Device depends on torch.cuda.is_available(), so just check it's valid
         assert config.device in ("cpu", "cuda")
+        # New dual-embedding defaults
+        assert config.embedding_strategy == "TIERED"
+        assert config.bge_threshold == 0.72
+        assert config.bge_model == "BAAI/bge-large-en-v1.5"
+        assert config.auto_summarize_interval == 15
 
     def test_env_var_overrides(self) -> None:
         """Test environment variable overrides for all settings."""

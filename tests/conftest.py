@@ -19,6 +19,10 @@ def temp_db_config(temp_db_path):
         device="cpu",
         model="sentence-transformers/all-MiniLM-L6-v2",
         dtype="float32",
+        embedding_strategy="TIERED",
+        bge_threshold=0.72,
+        bge_model="BAAI/bge-large-en-v1.5",
+        auto_summarize_interval=15,
     )
 
 
