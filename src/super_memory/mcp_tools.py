@@ -241,3 +241,47 @@ def register_tools(mcp: FastMCP) -> None:
 
         context = "\n---\n".join([r.text for r in results])
         return f"Found these relevant memories:\n\n{context}"
+
+    @mcp.tool()
+    @_mcp_error_handler
+    def boomerang_memory_search_tiered(question: str, top_k: int = 5) -> str:
+        """Fast tiered memory search - Quick MiniLM search with BGE fallback.
+
+        Use this for routine queries where speed matters.
+        This is the "Fast Reply" mode - prioritizes MiniLM speed but falls back
+        to BGE-Large if confidence is low (below BGE_THRESHOLD config).
+
+        Args:
+            question: Query text to search for.
+            top_k: Maximum number of results to return (default 5, max 20).
+        """
+        logger.info("Tiered memory search: %s", question)
+        results = query_memories(question=question, top_k=top_k, strategy_override="TIERED")
+
+        if not results:
+            return "No relevant memories found in tiered search."
+
+        context = "\n---\n".join([r.text for r in results])
+        return f"[TIERED] Found these relevant memories:\n\n{context}"
+
+    @mcp.tool()
+    @_mcp_error_handler
+    def boomerang_memory_search_parallel(question: str, top_k: int = 5) -> str:
+        """Archivist parallel memory search - Dual-tier search with RRF fusion.
+
+        Use this for important queries where maximum recall matters.
+        This is the "Archivist" mode - searches both MiniLM and BGE-Large tables
+        simultaneously and merges results using Reciprocal Rank Fusion (RRF).
+
+        Args:
+            question: Query text to search for.
+            top_k: Maximum number of results to return (default 5, max 20).
+        """
+        logger.info("Parallel memory search: %s", question)
+        results = query_memories(question=question, top_k=top_k, strategy_override="PARALLEL")
+
+        if not results:
+            return "No relevant memories found in parallel search."
+
+        context = "\n---\n".join([r.text for r in results])
+        return f"[PARALLEL] Found these relevant memories:\n\n{context}"

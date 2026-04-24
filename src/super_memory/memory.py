@@ -139,7 +139,13 @@ def _get_or_create_table():
     db = get_db()
     try:
         if "memories" in db.list_tables():
-            return db.open_table("memories")
+            table = db.open_table("memories")
+            if not _validate_table_accessible(table, "memories"):
+                raise DatabaseError(
+                    "Table 'memories' exists but is corrupted. "
+                    "Database needs re-initialization."
+                )
+            return table
     except Exception as e:
         logger.error("Failed to list tables: %s", e)
         raise DatabaseError(f"Failed to list tables: {e}") from e
@@ -150,7 +156,13 @@ def _get_or_create_table():
         # Handle race condition where table was created between check and create
         if "already exists" in str(e).lower():
             try:
-                return db.open_table("memories")
+                table = db.open_table("memories")
+                if not _validate_table_accessible(table, "memories"):
+                    raise DatabaseError(
+                        "Table 'memories' exists but is corrupted. "
+                        "Database needs re-initialization."
+                    )
+                return table
             except Exception as open_err:
                 logger.error(
                     "Table creation reported success but open failed: %s", open_err
@@ -174,7 +186,13 @@ def _get_or_create_table_long():
     db = get_db()
     try:
         if "memories_long" in db.list_tables():
-            return db.open_table("memories_long")
+            table = db.open_table("memories_long")
+            if not _validate_table_accessible(table, "memories_long"):
+                raise DatabaseError(
+                    "Table 'memories_long' exists but is corrupted. "
+                    "Database needs re-initialization."
+                )
+            return table
     except Exception as e:
         logger.error("Failed to list tables: %s", e)
         raise DatabaseError(f"Failed to list tables: {e}") from e
@@ -185,7 +203,13 @@ def _get_or_create_table_long():
         # Handle race condition where table was created between check and create
         if "already exists" in str(e).lower():
             try:
-                return db.open_table("memories_long")
+                table = db.open_table("memories_long")
+                if not _validate_table_accessible(table, "memories_long"):
+                    raise DatabaseError(
+                        "Table 'memories_long' exists but is corrupted. "
+                        "Database needs re-initialization."
+                    )
+                return table
             except Exception as open_err:
                 logger.error(
                     "Table creation reported success but open failed: %s", open_err
@@ -224,6 +248,25 @@ def _validate_vector_dimensions() -> None:
         logger.debug("Could not validate vector dimensions: %s", e)
 
 
+def _validate_table_accessible(table, table_name: str) -> bool:
+    """Check if a table can actually be accessed/queried.
+
+    Args:
+        table: LanceDB table instance to validate.
+        table_name: Name of table for error messages.
+
+    Returns:
+        True if table is accessible, False otherwise.
+    """
+    try:
+        # Try a simple search operation to verify table is usable
+        table.search().limit(0).to_pydantic(_get_memory_schema())
+        return True
+    except Exception as e:
+        logger.error("Table '%s' is not accessible: %s", table_name, e)
+        return False
+
+
 def ensure_initialized():
     """Ensure database and table are initialized. Call before operations that need them."""
     _migrate_schema_if_needed()
@@ -250,7 +293,11 @@ def _migrate_schema_if_needed() -> None:
         existing_tables = db.list_tables()
     except Exception as e:
         logger.error("Failed to list tables (DB may be corrupted): %s", e)
-        raise MigrationError(f"Failed to list tables (DB may be corrupted): {e}") from e
+        raise MigrationError(
+            f"Failed to list tables (DB may be corrupted): {e}. "
+            "Hint: Check SUPER_MEMORY_DB_PATH points to a valid database location. "
+            "If corrupted, delete the memories.lance directory and restart."
+        ) from e
 
     if "memories" not in existing_tables:
         try:

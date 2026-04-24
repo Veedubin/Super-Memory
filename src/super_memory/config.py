@@ -45,6 +45,7 @@ def get_config() -> Config:
     """
     raw_path = os.environ.get("SUPER_MEMORY_DB_PATH", "./memory_data")
     db_path = os.path.abspath(raw_path)
+
     model = os.environ.get(
         "SUPER_MEMORY_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
     )
