@@ -1,3 +1,18 @@
+> ## ⚠️ NO LONGER IN ACTIVE DEVELOPMENT
+>
+> **This project (`Super-Memory/`, Python + LanceDB) is no longer in active development.**
+>
+> | Status | Replacement |
+> |--------|-------------|
+> | Memory backend | **[`memini-ai-dev`](https://github.com/...)** — successor written in Python with PostgreSQL + pgvector. Adds trust scoring, knowledge graph, tiered loading, thought chains, multi-peer support, and a more robust schema. Source at `~/Projects/MCP-Servers/memini-ai-dev/`. |
+> | Orchestration plugin | **[`@veedubin/boomerang-v3`](https://www.npmjs.com/package/@veedubin/boomerang-v3)** — successor that integrates with `memini-ai-dev` via the `memini-ai-dev` MCP server. Source at `~/Projects/MCP-Servers/boomerang-v3/`. |
+>
+> **This directory is kept for historical reference only.** No new features, bug fixes, or releases will be made here. The LanceDB embeddings, `memory_data/` snapshots, and `dist/` builds are still functional if you point an older OpenCode / Boomerang v1 at them.
+>
+> **Migrating?** See `~/Projects/MCP-Servers/memini-ai-dev/README.md` for the migration guide. The new server is drop-in compatible with the old `save_to_memory` / `query_memory` tool shape, plus 50+ new tools.
+
+---
+
 # Super-Memory
 
 A semantic memory storage and retrieval MCP (Model Context Protocol) server using LanceDB and sentence transformers.
